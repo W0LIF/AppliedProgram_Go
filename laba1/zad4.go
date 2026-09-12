@@ -5,8 +5,10 @@ import (
 )
 
 func main() {
-	fmt.Println(1 + 3)
-	fmt.Println(3 - 2)
-	fmt.Println(3 * 2)
-	fmt.Println(3 / 2)
+	var a, b int
+	fmt.Scan(&a, &b)
+	fmt.Println(a + b)
+	fmt.Println(a - b)
+	fmt.Println(a * b)
+	fmt.Println(a / b)
 }
