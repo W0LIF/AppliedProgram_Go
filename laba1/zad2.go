@@ -6,7 +6,7 @@ import (
 
 func main() {
 	var age int = 23
-	var height float64 = 1.75
+	var height float64 = 1.78
 	var name string = "Oleg"
 	var isStudent bool = true
 
