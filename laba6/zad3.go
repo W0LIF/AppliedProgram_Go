@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"time"
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 	randomCh := make(chan int)
 	parityInput := make(chan int)
 	parityCh := make(chan string)
 
 	go func() {
 		for i := 0; i < 10; i++ {
-			num := rand.Intn(100)
+			num := rand.IntN(100)
 			randomCh <- num
 			parityInput <- num
 			time.Sleep(200 * time.Millisecond)

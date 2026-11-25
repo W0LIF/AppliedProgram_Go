@@ -1,0 +1,3 @@
+Воркер 1: world -> dlrow
+Воркер 2: hello -> olleh
+Воркер 1: Go programming -> gnimmargorp oG
