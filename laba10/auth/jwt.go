@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -20,6 +21,7 @@ type TokenManager struct {
 
 func NewTokenManager(secret string) *TokenManager {
 	if secret == "" {
+		log.Println("WARNING: JWT_SECRET is not set, using insecure development secret")
 		secret = "dev-secret-change-me"
 	}
 	return &TokenManager{secret: []byte(secret), ttl: time.Hour}
@@ -46,7 +48,10 @@ func (m *TokenManager) Parse(tokenString string) (*Claims, error) {
 			return nil, errors.New("unexpected signing method")
 		}
 		return m.secret, nil
-	})
+	},
+		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+		jwt.WithIssuer("laba10"),
+	)
 	if err != nil {
 		return nil, err
 	}

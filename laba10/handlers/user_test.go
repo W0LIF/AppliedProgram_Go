@@ -8,27 +8,32 @@ import (
 	"strings"
 	"testing"
 
+	"laba10/auth"
 	"laba10/models"
 	"laba10/storage"
 )
 
+// newTestMux собирает маршруты так же, как это делает main.go:
+// CRUD над пользователями доступен только роли admin.
+// Возвращает токен администратора.
 func newTestMux() (*http.ServeMux, *storage.MemoryStorage, string) {
 	store := storage.NewMemoryStorage()
-	tokens := storage.NewTokenStore()
+	tm := auth.NewTokenManager("test-secret")
+	ss := auth.NewSessionStore()
 	h := NewUserHandler(store)
 
-	u, _ := store.CreateWithPassword(
-		models.User{Name: "Tester", Email: "t@x.com", Age: 20},
+	admin, _ := store.CreateWithPassword(
+		models.User{Name: "Admin", Email: "admin@x.com", Age: 99, Role: "admin"},
 		"hash",
 	)
-	token := tokens.Issue(u.ID)
+	token, _ := tm.Issue(admin.ID, admin.Role)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /users", Wrap(RequireAuth(tokens, h.List)))
-	mux.HandleFunc("GET /users/{id}", Wrap(RequireAuth(tokens, h.Get)))
-	mux.HandleFunc("POST /users", Wrap(RequireAuth(tokens, h.Create)))
-	mux.HandleFunc("PUT /users/{id}", Wrap(RequireAuth(tokens, h.Update)))
-	mux.HandleFunc("DELETE /users/{id}", Wrap(RequireAuth(tokens, h.Delete)))
+	mux.HandleFunc("GET /users", Wrap(RequireAuth(tm, ss, h.List)))
+	mux.HandleFunc("GET /users/{id}", Wrap(RequireAuth(tm, ss, h.Get)))
+	mux.HandleFunc("POST /users", Wrap(RequireAuth(tm, ss, RequireRole(h.Create, "admin"))))
+	mux.HandleFunc("PUT /users/{id}", Wrap(RequireAuth(tm, ss, RequireRole(h.Update, "admin"))))
+	mux.HandleFunc("DELETE /users/{id}", Wrap(RequireAuth(tm, ss, RequireRole(h.Delete, "admin"))))
 	return mux, store, token
 }
 

@@ -73,6 +73,9 @@ func (s *MemoryStorage) Create(u models.User) (models.User, error) {
 
 	u.ID = s.nextID
 	s.nextID++
+	if u.Role == "" {
+		u.Role = "user"
+	}
 	s.users[u.ID] = u
 	return u, nil
 }

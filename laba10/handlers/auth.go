@@ -90,6 +90,9 @@ func (h *AuthHandler) SessionLogin(w http.ResponseWriter, r *http.Request) error
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return BadRequest("invalid JSON")
 	}
+	if req.Email == "" || req.Password == "" {
+		return BadRequest("email and password are required")
+	}
 
 	u, hash, err := h.store.FindByEmail(req.Email)
 	if errors.Is(err, storage.ErrNotFound) {

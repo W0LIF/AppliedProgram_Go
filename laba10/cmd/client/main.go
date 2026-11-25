@@ -9,12 +9,12 @@ import (
 	"laba10/models"
 )
 
-const tokenFile = ".lab9-token"
+const tokenFile = ".lab10-token"
 
 func main() {
 	baseURL := os.Getenv("API_URL")
 	if baseURL == "" {
-		baseURL = "http://localhost:8443"
+		baseURL = "https://localhost:8443"
 	}
 	c := NewClient(baseURL)
 
@@ -63,7 +63,7 @@ func printMenu(c *Client) {
 	if c.Token() != "" {
 		state = "авторизован"
 	}
-	fmt.Printf("\n═══ Лабораторная 9 — клиент (%s) ═══\n", state)
+	fmt.Printf("\n═══ Лабораторная 10 — клиент (%s) ═══\n", state)
 	fmt.Println("  1. Список пользователей")
 	fmt.Println("  2. Пользователь по ID")
 	fmt.Println("  3. Создать пользователя")
@@ -187,10 +187,7 @@ func doRegister(c *Client, in *bufio.Reader) {
 }
 
 func doLogout(c *Client) {
-	if err := c.Logout(); err != nil {
-		reportError(err)
-		return
-	}
+	// JWT хранится только на клиенте: для выхода достаточно забыть токен.
 	c.SetToken("")
 	_ = os.Remove(tokenFile)
 	fmt.Println("Вышли из сессии")

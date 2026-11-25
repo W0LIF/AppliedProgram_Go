@@ -28,3 +28,11 @@ go.work.sum
 .kilo
 
 /laba9/.lab9-token
+/laba10/.lab10-token
+
+# laba10: сгенерированные сертификаты и ключи
+/laba10/certs/*.crt
+/laba10/certs/*.key
+/laba10/certs/*.csr
+/laba10/certs/*.srl
+/laba10/certs/*.ext

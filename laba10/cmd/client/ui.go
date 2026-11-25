@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -11,10 +12,20 @@ import (
 	"laba10/models"
 )
 
+// readLine читает строку. Без обработки EOF меню печаталось бы бесконечно.
 func readLine(in *bufio.Reader, prompt string) string {
 	fmt.Print(prompt)
-	line, _ := in.ReadString('\n')
-	return strings.TrimSpace(line)
+	line, err := in.ReadString('\n')
+	line = strings.TrimSpace(line)
+	if err != nil && line == "" {
+		if errors.Is(err, io.EOF) {
+			fmt.Println("\nввод закрыт, завершение работы")
+			os.Exit(0)
+		}
+		fmt.Printf("\nошибка чтения ввода: %v\n", err)
+		os.Exit(1)
+	}
+	return line
 }
 
 func readInt(in *bufio.Reader, prompt string) int {
@@ -62,5 +73,3 @@ func printUser(u models.User) {
 	fmt.Printf("  Age:   %d\n", u.Age)
 	fmt.Printf("  Role:  %s\n", u.Role)
 }
-
-var _ = os.Stdout

@@ -140,8 +140,10 @@ func (s *PostgresStorage) Create(u models.User) (models.User, error) {
 
 func (s *PostgresStorage) Update(id int, u models.User) (models.User, error) {
 	res, err := s.db.Exec(
-		`UPDATE users SET name = $1, email = $2, age = $3 WHERE id = $4`,
-		u.Name, u.Email, u.Age, id,
+		`UPDATE users SET name = $1, email = $2, age = $3,
+		        role = COALESCE(NULLIF($4, ''), role)
+		 WHERE id = $5`,
+		u.Name, u.Email, u.Age, u.Role, id,
 	)
 	if err != nil {
 		return models.User{}, fmt.Errorf("update user: %w", err)
